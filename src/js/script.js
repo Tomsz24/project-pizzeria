@@ -78,7 +78,6 @@
           activeProduct.classList.remove('active');
         }
       });
-
     }
   }
 
