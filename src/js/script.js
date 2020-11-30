@@ -56,7 +56,10 @@
       this.id = id;
       this.data = data;
       this.renderInMenu();
+      this.getElement();
       this.initAccordion();
+      this.initOrderForm();
+      this.proccesOrder();
 
     }
 
@@ -67,10 +70,16 @@
       menuContainer.appendChild(this.element);
     }
 
-    initAccordion() {
-      const clickableTrigger = this.element.querySelector(select.menuProduct.clickable);
+    getElement() {
+      this.accordionTrigger = this.element.querySelector(select.menuProduct.clickable);
+      this.form = this.element.querySelector(select.menuProduct.form);
+      this.formInputs = this.form.querySelectorAll(select.all.formInputs);
+      this.cartButton = this.element.querySelector(select.menuProduct.cartButton);
+      this.priceElem = this.element.querySelector(select.menuProduct.priceElem);
+    }
 
-      clickableTrigger.addEventListener('click', event => {
+    initAccordion() {
+      this.accordionTrigger.addEventListener('click', event => {
         event.preventDefault();
         const activeProducts = document.querySelectorAll('.product.active');
         this.element.classList.toggle('active');
@@ -78,6 +87,57 @@
           activeProduct.classList.remove('active');
         }
       });
+    }
+
+    initOrderForm() {
+
+      this.form.addEventListener('submit', event => {
+        event.preventDefault();
+        this.proccesOrder();
+      });
+
+      for (let input of this.formInputs) {
+        input.addEventListener('change', () => {
+          this.proccesOrder();
+        });
+      }
+
+      this.cartButton.addEventListener('click', event => {
+        event.preventDefault();
+        this.proccesOrder();
+      });
+    }
+
+    proccesOrder() {
+      const thisProduct = this;
+
+
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      console.log('formData', formData);
+
+      let price = this.data.price;
+
+      for (let paramId in this.data.params) {
+        const param = this.data.params[paramId];
+
+        for (let optionId in param.options) {
+          const option = param.options[optionId];
+
+          if (formData[paramId] && formData[paramId].includes(optionId)) {
+            if (!option.default) {
+              price += option.price;
+            }
+          } else {
+            if (option.default) {
+              price -= option.price;
+            }
+          }
+        }
+      }
+
+      this.priceElem.innerHTML = price;
+
+      console.log(price);
     }
   }
 
@@ -98,11 +158,11 @@
 
     init: function () {
       const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
+      // console.log('*** App starting ***');
+      // console.log('thisApp:', thisApp);
+      // console.log('classNames:', classNames);
+      // console.log('settings:', settings);
+      // console.log('templates:', templates);
 
       thisApp.initData();
       thisApp.initMenu();
