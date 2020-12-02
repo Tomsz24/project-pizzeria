@@ -32,20 +32,20 @@
     },
   };
 
-  // const classNames = {
-  //   menuProduct: {
-  //     wrapperActive: 'active',
-  //     imageVisible: 'active',
-  //   },
-  // };
+  const classNames = {
+    menuProduct: {
+      wrapperActive: 'active',
+      imageVisible: 'active',
+    },
+  };
 
-  // const settings = {
-  //   amountWidget: {
-  //     defaultValue: 1,
-  //     defaultMin: 1,
-  //     defaultMax: 9,
-  //   }
-  // };
+  const settings = {
+    amountWidget: {
+      defaultValue: 1,
+      defaultMin: 0,
+      defaultMax: 10,
+    }
+  };
 
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
@@ -59,6 +59,7 @@
       this.getElements();
       this.initAccordion();
       this.initOrderForm();
+      this.initAmountWidget();
       this.proccesOrder();
 
     }
@@ -77,15 +78,16 @@
       this.cartButton = this.element.querySelector(select.menuProduct.cartButton);
       this.priceElem = this.element.querySelector(select.menuProduct.priceElem);
       this.imageWrapper = this.element.querySelector(select.menuProduct.imageWrapper);
+      this.amountWidget = this.element.querySelector(select.menuProduct.amountWidget);
     }
 
     initAccordion() {
       this.accordionTrigger.addEventListener('click', event => {
         event.preventDefault();
         const activeProducts = document.querySelectorAll('.product.active');
-        this.element.classList.toggle('active');
+        this.element.classList.toggle(classNames.menuProduct.wrapperActive);
         for (const activeProduct of activeProducts) {
-          activeProduct.classList.remove('active');
+          activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
         }
       });
     }
@@ -109,6 +111,10 @@
       });
     }
 
+    initAmountWidget() {
+      this.amountWidget = new AmountWidget(this.amountWidget);
+    }
+
     proccesOrder() {
       const formData = utils.serializeFormToObject(this.form);
       let price = this.data.price;
@@ -123,9 +129,9 @@
           const optionImage = this.imageWrapper.querySelector(`.${paramId}-${optionId}`);
           if (optionImage) {
             if (optionSelected) {
-              optionImage.classList.add('active');
+              optionImage.classList.add(classNames.menuProduct.imageVisible);
             } else {
-              optionImage.classList.remove('active');
+              optionImage.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
 
@@ -143,10 +149,51 @@
       this.priceElem.innerHTML = price;
     }
   }
+  class AmountWidget {
+    constructor(element) {
+      this.element = element;
+      this.getElements(element);
+      this.initActions();
+      this.setValue(this.input.value);
+    }
+
+    getElements(element) {
+      this.element = element;
+      this.input = this.element.querySelector(select.widgets.amount.input);
+      this.linkDecrease = this.element.querySelector(select.widgets.amount.linkDecrease);
+      this.linkIncrease = this.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    initActions() {
+      this.input.value = settings.amountWidget.defaultValue;
+      this.input.addEventListener('change', (event) => {
+        event.preventDefault();
+        this.setValue(this.input.value);
+      });
+
+      this.linkDecrease.addEventListener('click', event => {
+        event.preventDefault();
+        this.setValue(--this.input.value);
+      });
+
+      this.linkIncrease.addEventListener('click', event => {
+        event.preventDefault();
+        this.setValue(++this.input.value);
+      });
+    }
+
+    setValue(value) {
+      const newValue = parseInt(value);
+      if (this.value !== newValue && !isNaN(newValue) && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
+        this.value = newValue;
+        this.input.value = this.value;
+      }
+      this.input.value = this.value;
+    }
+  }
 
   const app = {
     initMenu: function () {
-
       for (let productData in this.data.products) {
         new Product(productData, this.data.products[productData]);
       }
