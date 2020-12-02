@@ -112,6 +112,9 @@
     }
 
     initAmountWidget() {
+      this.amountWidget.addEventListener('updated', () => {
+        this.proccesOrder();
+      });
       this.amountWidget = new AmountWidget(this.amountWidget);
     }
 
@@ -146,6 +149,7 @@
           }
         }
       }
+      price *= this.amountWidget.value;
       this.priceElem.innerHTML = price;
     }
   }
@@ -182,11 +186,17 @@
       });
     }
 
+    announce() {
+      const event = new Event('updated');
+      this.element.dispatchEvent(event);
+    }
+
     setValue(value) {
       const newValue = parseInt(value);
       if (this.value !== newValue && !isNaN(newValue) && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
         this.value = newValue;
         this.input.value = this.value;
+        this.announce();
       }
       this.input.value = this.value;
     }
