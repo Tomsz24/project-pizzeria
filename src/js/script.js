@@ -120,7 +120,6 @@
     }
 
     initOrderForm() {
-
       this.form.addEventListener('submit', event => {
         event.preventDefault();
         this.proccesOrder();
@@ -135,6 +134,7 @@
       this.cartButton.addEventListener('click', event => {
         event.preventDefault();
         this.proccesOrder();
+        this.addToCart();
       });
     }
 
@@ -143,6 +143,10 @@
         this.proccesOrder();
       });
       this.amountWidget = new AmountWidget(this.amountWidget);
+    }
+
+    addToCart() {
+      app.cart.add(this.prepareCartProduct());
     }
 
     proccesOrder() {
@@ -176,9 +180,50 @@
           }
         }
       }
+      this.priceSingle = price;
       price *= this.amountWidget.value;
       this.priceElem.innerHTML = price;
     }
+
+    prepareCartProduct() {
+      const productSummary = {
+        id: this.id,
+        name: this.data.name,
+        amount: parseInt(this.formInputs[this.formInputs.length - 1].value),
+        priceSingle: this.priceSingle,
+        price: parseInt(this.priceElem.innerHTML),
+        params: this.prepareCartProductParams()
+      };
+      return productSummary;
+    }
+
+    prepareCartProductParams() {
+      const thisProduct = this;
+
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      const params = {};
+
+      for (let paramId in thisProduct.data.params) {
+        const param = thisProduct.data.params[paramId];
+
+        params[paramId] = {
+          label: param.label,
+          options: {},
+        };
+
+        for (let optionId in param.options) {
+          const option = param.options[optionId];
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+
+          if (optionSelected) {
+            const elem = option.label;
+            params[paramId].options[elem] = elem;
+          }
+        }
+      }
+      return params;
+    }
+
   }
   class AmountWidget {
     constructor(element) {
@@ -240,12 +285,19 @@
       this.dom = {};
       this.dom.wrapper = element;
       this.dom.toggleTrigger = this.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      this.dom.productList = this.dom.wrapper.querySelector(select.cart.productList);
     }
 
     initActions() {
       this.dom.toggleTrigger.addEventListener('click', () => {
         this.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
+
+    add(menuProduct) {
+      const generateHTML = templates.cartProduct(menuProduct);
+      const generateDOM = utils.createDOMFromHTML(generateHTML);
+      this.dom.productList.appendChild(generateDOM);
     }
   }
 
