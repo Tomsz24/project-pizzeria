@@ -197,6 +197,7 @@
 
       };
       return productSummary;
+
     }
 
     prepareCartProductParams() {
@@ -323,7 +324,6 @@
       let subtotalPrice = 0;
 
       for (const element of this.products) {
-        element.amount *= 1;
         totalNumber += element.amount;
         subtotalPrice += element.price;
       }
@@ -373,11 +373,11 @@
     }
 
     initAmountCartProductWidget() {
-      this.dom.wrapper = new AmountWidget(this.dom.amountWidget);
-      this.dom.input.value = this.amount;
+      this.amountWidget = new AmountWidget(this.dom.amountWidget);
+      this.amountWidget.input.value = this.amount;
 
       this.dom.amountWidget.addEventListener('updated', () => {
-        this.amount = this.dom.input.value;
+        this.amount = this.amountWidget.value;
         this.price = this.amount * this.priceSingle;
         this.dom.price.innerHTML = this.price;
       });
