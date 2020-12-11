@@ -36,7 +36,8 @@
       productList: '.cart__order-summary',
       toggleTrigger: '.cart__summary',
       totalNumber: `.cart__total-number`,
-      totalPrice: '.cart__total-price strong, .cart__order-total .cart__order-price-sum strong',
+      totalPrice: '.cart__total-price strong',
+      totalPriceSummary: '.cart__order-total .cart__order-price-sum strong',
       subtotalPrice: '.cart__order-subtotal .cart__order-price-sum strong',
       deliveryFee: '.cart__order-delivery .cart__order-price-sum strong',
       form: '.cart__order',
@@ -259,7 +260,10 @@
     }
 
     announce() {
-      const event = new Event('updated');
+      // const event = new Event('updated');
+      const event = new CustomEvent('updated', {
+        bubbles: true
+      });
       this.element.dispatchEvent(event);
     }
 
@@ -286,11 +290,19 @@
       this.dom.wrapper = element;
       this.dom.toggleTrigger = this.dom.wrapper.querySelector(select.cart.toggleTrigger);
       this.dom.productList = this.dom.wrapper.querySelector(select.cart.productList);
+      this.dom.deliveryFee = this.dom.wrapper.querySelector(select.cart.deliveryFee);
+      this.dom.subtotalPrice = this.dom.wrapper.querySelector(select.cart.subtotalPrice);
+      this.dom.totalPrice = this.dom.wrapper.querySelector(select.cart.totalPrice);
+      this.dom.totalNumber = this.dom.wrapper.querySelector(select.cart.totalNumber);
+      this.dom.totalPriceSummary = this.dom.wrapper.querySelector(select.cart.totalPriceSummary);
     }
 
     initActions() {
       this.dom.toggleTrigger.addEventListener('click', () => {
         this.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
+      this.dom.productList.addEventListener('updated', () => {
+        this.update();
       });
     }
 
@@ -300,8 +312,32 @@
       this.dom.productList.appendChild(generateDOM);
 
       this.products.push(new CartProduct(menuProduct, generateDOM));
+      this.update();
     }
 
+    update() {
+      const deliveryFee = settings.cart.defaultDeliveryFee;
+      let totalNumber = 0;
+      let subtotalPrice = 0;
+
+      for (const element of this.products) {
+        element.amount *= 1;
+        totalNumber += element.amount
+        subtotalPrice += element.price;
+      }
+
+      this.dom.totalNumber.textContent = parseInt(totalNumber);
+      this.dom.subtotalPrice.textContent = subtotalPrice;
+      if (totalNumber > 0) {
+        this.dom.deliveryFee.textContent = deliveryFee;
+        this.dom.totalPriceSummary.textContent = subtotalPrice + deliveryFee;
+        this.dom.totalPrice.textContent = subtotalPrice + deliveryFee;
+      } else {
+        this.dom.deliveryFee.textContent = 0;
+        this.dom.totalPriceSummary.textContent = 0;
+        this.dom.totalPrice.textContent = 0;
+      }
+    }
   }
 
   class CartProduct {
