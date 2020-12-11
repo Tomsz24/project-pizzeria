@@ -322,11 +322,11 @@
 
       for (const element of this.products) {
         element.amount *= 1;
-        totalNumber += element.amount
+        totalNumber += element.amount;
         subtotalPrice += element.price;
       }
 
-      this.dom.totalNumber.textContent = parseInt(totalNumber);
+      this.dom.totalNumber.textContent = totalNumber;
       this.dom.subtotalPrice.textContent = subtotalPrice;
       if (totalNumber > 0) {
         this.dom.deliveryFee.textContent = deliveryFee;
