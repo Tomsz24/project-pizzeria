@@ -18,7 +18,6 @@ class Product {
   renderInMenu() {
     const generateHTML = templates.menuProduct(this.data);
     this.element = utils.createDOMFromHTML(generateHTML);
-    console.log(this.element);
     const menuContainer = document.querySelector(select.containerOf.menu);
     menuContainer.appendChild(this.element);
   }
