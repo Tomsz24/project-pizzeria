@@ -67,7 +67,7 @@ export const select = {
     phoneNumber: '[name="phone"]',
     address: '[name="address"]',
     starters: '.checkbox label',
-    submitButton: '.booking-form',
+    submitForm: '.booking-form',
   },
   nav: {
     links: '.main-nav a',
