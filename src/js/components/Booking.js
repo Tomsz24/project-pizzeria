@@ -45,7 +45,6 @@ class Booking {
 
     this.dom.wrapper.addEventListener('updated', () => {
       this.updateDOM();
-      this.bookTable();
     });
 
     this.dom.submitForm.addEventListener('submit', event => {
@@ -169,22 +168,24 @@ class Booking {
   bookTable() {
     for (let table of this.dom.tables) {
       if (!table.classList.contains(classNames.booking.tableBooked)) {
-        table.classList.remove('selected');
         table.addEventListener('click', () => {
-          let tableId = table.getAttribute(settings.booking.tableIdAttribute);
-          this.bookedTableId = parseInt(tableId);
-          table.classList.toggle('selected');
+          for (let table of this.dom.tables) {
+            if (table.classList.contains('selected')) {
+              table.classList.remove('selected');
+            }
+          }
+          table.classList.add('selected');
         });
       }
     }
   }
 
   sendReservation() {
-    const selectedTables = [];
+    let selectedTables;
     for (let table of this.dom.tables) {
       let tableId = table.getAttribute(settings.booking.tableIdAttribute);
       if (table.classList.contains('selected')) {
-        selectedTables.push(tableId * 1);
+        selectedTables = (tableId * 1);
       }
     }
 
@@ -222,7 +223,21 @@ class Booking {
       this.makeBooked(parsedResponse.date, parsedResponse.hour, parsedResponse.duration, parsedResponse.table);
       console.log('parsedRes', parsedResponse);
     });
-    console.log(payload);
+
+
+    this.hoursAmount.value = settings.amountWidget.defaultValue;
+    this.peopleAmount.value = settings.amountWidget.defaultValue;
+    for (let starter of this.dom.starters) {
+      const input = starter.querySelector('input');
+      input.checked = false;
+    }
+    this.dom.phoneNumber.value = '';
+    this.dom.address.value = '';
+    for (let table of this.dom.tables) {
+      if (table.classList.contains('selected')) {
+        table.classList.remove('selected');
+      }
+    }
   }
 
 }
