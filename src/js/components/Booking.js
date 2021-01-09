@@ -90,9 +90,9 @@ class Booking {
       const eventsCurrentResponse = allResponses[1];
       const eventsRepeatResponse = allResponses[2];
       return Promise.all([
+        bookingResponse.json(),
         eventsCurrentResponse.json(),
         eventsRepeatResponse.json(),
-        bookingResponse.json(),
       ]);
     }).then(([bookings, eventsCurrent, eventsRepeat]) => {
       this.parseData(bookings, eventsCurrent, eventsRepeat);
@@ -139,6 +139,8 @@ class Booking {
       this.booked[date][hourBlock].push(table);
 
     }
+
+    this.updateDOM();
   }
 
   updateDOM() {
@@ -185,7 +187,7 @@ class Booking {
     for (let table of this.dom.tables) {
       let tableId = table.getAttribute(settings.booking.tableIdAttribute);
       if (table.classList.contains('selected')) {
-        selectedTables = (tableId * 1);
+        selectedTables = parseInt(tableId);
       }
     }
 
@@ -221,6 +223,7 @@ class Booking {
       return response.json();
     }).then(parsedResponse => {
       this.makeBooked(parsedResponse.date, parsedResponse.hour, parsedResponse.duration, parsedResponse.table);
+      this.updateDOM();
       console.log('parsedRes', parsedResponse);
     });
 
