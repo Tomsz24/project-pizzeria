@@ -1,11 +1,11 @@
-import { templates, select, classNames } from '../settings.js';
+import { templates, select, } from '../settings.js';
 import Carousel from './Carousel.js';
 
 class Home {
   constructor(element) {
     this.render(element);
     this.initWidgets();
-    this.initActions();
+    // this.initActions();
   }
 
   render(element) {
@@ -24,24 +24,6 @@ class Home {
 
   initWidgets() {
     this.carouselWidget = new Carousel(this.dom.carouselWidget);
-  }
-
-  initActions() {
-    this.dom.orderButton.addEventListener('click', event => {
-      event.preventDefault();
-      this.pages[0].classList.remove(classNames.pages.active);
-      this.navLinks[0].classList.remove(classNames.nav.active);
-      this.pages[1].classList.add(classNames.pages.active);
-      this.navLinks[1].classList.add(classNames.nav.active);
-    });
-
-    this.dom.bookButton.addEventListener('click', event => {
-      event.preventDefault();
-      this.pages[0].classList.remove(classNames.pages.active);
-      this.navLinks[0].classList.remove(classNames.nav.active);
-      this.pages[2].classList.add(classNames.pages.active);
-      this.navLinks[2].classList.add(classNames.nav.active);
-    });
   }
 }
 

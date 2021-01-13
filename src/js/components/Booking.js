@@ -45,6 +45,7 @@ class Booking {
 
     this.dom.wrapper.addEventListener('updated', () => {
       this.updateDOM();
+      this.bookTable();
     });
 
     this.dom.submitForm.addEventListener('submit', event => {
@@ -169,16 +170,20 @@ class Booking {
 
   bookTable() {
     for (let table of this.dom.tables) {
-      if (!table.classList.contains(classNames.booking.tableBooked)) {
-        table.addEventListener('click', () => {
-          for (let table of this.dom.tables) {
+      table.classList.remove('selected');
+
+      table.addEventListener('click', (e) => {
+        if (table.classList.contains(classNames.booking.tableBooked)) {
+          return;
+        } else {
+          for (table of this.dom.tables) {
             if (table.classList.contains('selected')) {
               table.classList.remove('selected');
             }
           }
-          table.classList.add('selected');
-        });
-      }
+          e.target.classList.add('selected');
+        }
+      });
     }
   }
 
