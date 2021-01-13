@@ -5,7 +5,6 @@ class Home {
   constructor(element) {
     this.render(element);
     this.initWidgets();
-    // this.initActions();
   }
 
   render(element) {
