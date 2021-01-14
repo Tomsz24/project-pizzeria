@@ -9,7 +9,7 @@ class Booking {
     this.render(element);
     this.initWidgets();
     this.getData();
-    this.bookTable();
+    this.selectTable();
 
   }
 
@@ -45,7 +45,7 @@ class Booking {
 
     this.dom.wrapper.addEventListener('updated', () => {
       this.updateDOM();
-      this.bookTable();
+      this.removeSelectTable();
     });
 
     this.dom.submitForm.addEventListener('submit', event => {
@@ -125,7 +125,6 @@ class Booking {
   }
 
   makeBooked(date, hour, duration, table) {
-
     if (typeof this.booked[date] == 'undefined') {
       this.booked[date] = {};
     }
@@ -168,22 +167,27 @@ class Booking {
     }
   }
 
-  bookTable() {
+  selectTable() {
     for (let table of this.dom.tables) {
-      table.classList.remove('selected');
-
+      this.removeSelectTable();
       table.addEventListener('click', (e) => {
-        if (table.classList.contains(classNames.booking.tableBooked)) {
+        if (e.target.classList.contains(classNames.booking.tableBooked)) {
           return;
         } else {
           for (table of this.dom.tables) {
             if (table.classList.contains('selected')) {
-              table.classList.remove('selected');
+              this.removeSelectTable();
             }
           }
           e.target.classList.add('selected');
         }
       });
+    }
+  }
+
+  removeSelectTable() {
+    for (let table of this.dom.tables) {
+      table.classList.remove('selected');
     }
   }
 
