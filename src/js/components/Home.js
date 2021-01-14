@@ -17,7 +17,6 @@ class Home {
     this.dom.carouselWidget = this.dom.wrapper.querySelector(select.widgets.carousel.wrapper);
     this.dom.orderButton = this.dom.wrapper.querySelector(select.home.orderButton);
     this.dom.bookButton = this.dom.wrapper.querySelector(select.home.bookButton);
-    this.pages = document.querySelector(select.containerOf.pages).children;
     this.navLinks = document.querySelectorAll(select.nav.links);
   }
 
