@@ -19,14 +19,23 @@
     align-items: center;
     width: 700px;
     text-align: center;
+    transition: .6s;
 
     h2{
       padding: 40px 0;
       font-size: 30px;
+      transition: .4s;
+      text-decoration: none;
     }
 
     p {
-      display: none;
+      opacity: 0;
+      transition: .4s;
+      transform: translateY(-75px);
+    }
+
+    .nav-link{
+      text-decoration: none;
     }
   }
 
@@ -40,18 +49,15 @@
     text-align: center;
     cursor: pointer;
     margin-left: 0;
+    transition: .6s;
   }
 
   .order-online:hover > h2 {
-    margin-top: -10px;
-    transition-timing-function: ease-in;
-    transition-property: margin-top;
-    transition-duration: 0.25s;
+    transform: translateY(-25px);
   }
 
   .order-online:hover > p {
-    display: block;
-    margin-top: -50px;
+    opacity: 1;
     font-size: 15px;
     font-weight: 600;
   }
@@ -68,17 +74,14 @@
   }
 
   .book-a-table:hover > p {
-    display: block;
-    margin-top: -50px;
+    opacity: 1;
+    transform: translateY(-75px);
     font-size: 15px;
     font-weight: 600;
   }
 
   .book-a-table:hover > h2 {
-    margin-top: -10px;
-    transition-timing-function: ease-in;
-    transition-property: margin-top;
-    transition-duration: 0.25s;
+    transform: translateY(-25px);
   }
 
   .banner{
