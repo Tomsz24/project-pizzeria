@@ -1,5 +1,3 @@
-
-
 class BaseWidget {
   constructor(wrapperElement, initialValue) {
     this.dom = {};
