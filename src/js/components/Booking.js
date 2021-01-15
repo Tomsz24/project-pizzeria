@@ -174,11 +174,7 @@ class Booking {
         if (e.target.classList.contains(classNames.booking.tableBooked)) {
           return;
         } else {
-          for (table of this.dom.tables) {
-            if (table.classList.contains('selected')) {
-              this.removeSelectTable();
-            }
-          }
+          this.removeSelectTable();
           e.target.classList.add('selected');
         }
       });
